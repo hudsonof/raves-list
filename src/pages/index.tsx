@@ -1,154 +1,107 @@
-import type { NextPage } from 'next'
-import Image from 'next/image'
+import { Rave } from '@prisma/client';
+import type { GetServerSideProps, NextPage } from 'next';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { themeChange } from 'theme-change';
+import Loader from '../components/Loader';
+import { prisma } from '../lib/prisma';
 
-const Home: NextPage = () => {
-  return (
-    <div className="overflow-x-auto w-full">
-      <table className="table w-full">
-        <thead>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <Image src="/js-logo.svg" alt="Avatar Tailwind CSS Component" layout="fill" />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Hart Hagerty</div>
-                  <div className="text-sm opacity-50">United States</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              Zemlak, Daniel and Leannon
-              <br />
-              <span className="badge badge-ghost badge-sm">Desktop Support Technician</span>
-            </td>
-            <td>Purple</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <Image src="/js-logo.svg" alt="Avatar Tailwind CSS Component" layout="fill" />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Brice Swyre</div>
-                  <div className="text-sm opacity-50">China</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              Carroll Group
-              <br />
-              <span className="badge badge-ghost badge-sm">Tax Accountant</span>
-            </td>
-            <td>Red</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <Image src="/js-logo.svg" alt="Avatar Tailwind CSS Component" layout="fill" />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Marjy Ferencz</div>
-                  <div className="text-sm opacity-50">Russia</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              Rowe-Schoen
-              <br />
-              <span className="badge badge-ghost badge-sm">Office Assistant I</span>
-            </td>
-            <td>Crimson</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-          <tr>
-            <th>
-              <label>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </th>
-            <td>
-              <div className="flex items-center space-x-3">
-                <div className="avatar">
-                  <div className="mask mask-squircle w-12 h-12">
-                    <Image src="/js-logo.svg" alt="Avatar Tailwind CSS Component" layout="fill" />
-                  </div>
-                </div>
-                <div>
-                  <div className="font-bold">Yancy Tear</div>
-                  <div className="text-sm opacity-50">Brazil</div>
-                </div>
-              </div>
-            </td>
-            <td>
-              Wyman-Ledner
-              <br />
-              <span className="badge badge-ghost badge-sm">Community Outreach Specialist</span>
-            </td>
-            <td>Indigo</td>
-            <th>
-              <button className="btn btn-ghost btn-xs">details</button>
-            </th>
-          </tr>
-        </tbody>
-        <tfoot>
-          <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Job</th>
-            <th>Favorite Color</th>
-            <th></th>
-          </tr>
-        </tfoot>
+type RavesProps = {
+  raves: Rave[]
+}
 
-      </table>
-    </div>
-  )
+const Home: NextPage<RavesProps> = ({ raves }) => {
+  const router = useRouter();
+  const [loading, setLoading] = useState(true);
+  const themes = ["forest", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter", "light", "dark"];
+
+  const capitalizeFirstLetter = (string: String) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  useEffect(() => {
+    themeChange(false);
+    setLoading(false);
+  }, []);
+
+  if (!loading) {
+    return (
+      <>
+        <div className="flex flex-row justify-between p-5">
+          <div className="flex flex-row items-center">
+            <Image src="/ohm-white.svg" alt="Raves List" width={50} height={50} />
+            <h1 className='pl-5'>Raves List</h1>
+          </div>
+          <div className="flex flex-row items-end">
+            <button className="btn mr-5" onClick={() => { setLoading(true); router.push('/signin') }}>Entrar</button>
+            <div>
+              <label htmlFor="selectTema" className="text-sm font-medium leading-none">
+                Selecione um tema
+              </label>
+              <br />
+              <select id="selectTema" className="select select-bordered" data-choose-theme>
+                <option value="">Padrão</option>
+                {
+                  themes.map((theme, index) => {
+                    return <option key={index} value={theme}>{capitalizeFirstLetter(theme)}</option>;
+                  })
+                }
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div className="overflow-x-auto w-full p-5">
+          <div className="artboard grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 bg-primary p-5 rounded-xl">
+            {
+              raves.map((rave: Rave) => {
+                return (
+                  <div className="card bg-base-100 shadow-xl flex flex-row" key={rave.id}>
+                    <figure><Image src="/flor_da_vida.jpg" alt="Banner - Flor da Vida" layout="fixed" width={110} height={150} /></figure>
+                    <div className="card-body p-5">
+                      <h2 className="card-title">{rave.name}</h2>
+                      <div className="card-actions">
+                        <div className="badge badge-outline">{rave.date}</div>
+                        <div className="badge badge-outline">Fazenda Meia Lua</div>
+                        <div className="badge badge-outline">{rave.city}</div>
+                        <div className="badge badge-outline">{rave.state}</div>
+                      </div>
+                      <div className="card-actions">
+                        <button className="btn btn-primary btn-xs">Página do Evento</button>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        </div>
+      </>
+    )
+  } else {
+    return <Loader />
+  }
 }
 
 export default Home
+
+export const getServerSideProps: GetServerSideProps = async () => {
+  const raves: Rave[] = await prisma.rave.findMany();
+
+  const data = raves.map(rave => {
+    return {
+      id: rave.id,
+      name: rave.name,
+      date: rave.date.toLocaleDateString(),
+      city: rave.city,
+      state: rave.state,
+    }
+  });
+
+  return {
+    props: {
+      raves: data
+    }
+  }
+}
