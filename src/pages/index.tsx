@@ -43,7 +43,6 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
       return rave.name.toLowerCase().includes(filter)
         || rave.city.toLowerCase().includes(filter)
         || rave.state.toLowerCase().includes(filter)
-        || rave..toLowerCase().includes(filter);
     });
   };
 

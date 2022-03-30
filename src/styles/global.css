@@ -14,3 +14,43 @@ html, body {
 #__next {
     height: 100%;
 }
+
+.logo {
+    width: 50px;
+    height: 50px;
+}
+
+[data-theme="forest"] .logo,
+[data-theme="dark"] .logo,
+[data-theme="synthwave"] .logo,
+[data-theme="halloween"] .logo,
+[data-theme="aqua"] .logo,
+[data-theme="black"] .logo,
+[data-theme="luxury"] .logo,
+[data-theme="dracula"] .logo,
+[data-theme="business"] .logo,
+[data-theme="night"] .logo,
+[data-theme="coffee"] .logo {
+    background: url('/ohm-white.svg');
+}
+
+[data-theme="cupcake"] .logo,
+[data-theme="bumblebee"] .logo,
+[data-theme="emerald"] .logo,
+[data-theme="corporate"] .logo,
+[data-theme="retro"] .logo,
+[data-theme="cyberpunk"] .logo,
+[data-theme="valentine"] .logo,
+[data-theme="garden"] .logo,
+[data-theme="lofi"] .logo,
+[data-theme="pastel"] .logo,
+[data-theme="fantasy"] .logo,
+[data-theme="wireframe"] .logo,
+[data-theme="cmyk"] .logo,
+[data-theme="autumn"] .logo,
+[data-theme="acid"] .logo,
+[data-theme="lemonade"] .logo,
+[data-theme="winter"] .logo,
+[data-theme="light"] .logo {
+    background: url('/ohm.svg');
+}

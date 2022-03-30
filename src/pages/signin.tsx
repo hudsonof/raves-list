@@ -2,20 +2,27 @@ import type { GetServerSideProps, NextPage } from 'next'
 import { getSession, signIn } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import Loader from '../components/Loader'
 import '../styles/Signin.module.css'
 
 const SignIn: NextPage = () => {
     const router = useRouter();
     const [passwordType, setPasswordType] = useState("password");
+    const [loading, setLoading] = useState(true);
 
     const handleShowPassword = () => {
         passwordType == "password" ? setPasswordType("text") : setPasswordType("password");
     }
 
     function handleSignInGoogle() {
+        setLoading(true);
         signIn('google');
     }
+
+    useEffect(() => {
+        setLoading(false);
+    }, []);
 
     return (
         <main className="mx-auto flex min-h-screen w-full items-center justify-center">
@@ -67,6 +74,7 @@ const SignIn: NextPage = () => {
                     Não tem uma conta? <a href="#" className="font-medium text-indigo-500 underline-offset-4 hover:underline">Crie uma</a>
                 </p>
             </section>
+            <Loader showLoader={loading} />
         </main>
     )
 }
