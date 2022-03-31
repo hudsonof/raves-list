@@ -1,4 +1,5 @@
-import { Rave } from '@prisma/client';
+import moment from 'moment';
+import 'moment/locale/pt-br';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
@@ -7,17 +8,30 @@ import { BaseSyntheticEvent, useEffect, useState } from 'react';
 import Loader from '../components/Loader';
 import { prisma } from '../lib/prisma';
 
+type RaveProps = {
+  id: String;
+  name: String;
+  date: Date;
+  place: String;
+  city: String;
+  state: String;
+  url: String;
+  image: String;
+}
+
 type RavesProps = {
-  raves: Rave[]
+  raves: RaveProps[]
 }
 
 const Home: NextPage<RavesProps> = ({ raves }) => {
   const router = useRouter();
   const { theme, setTheme } = useTheme();
   const themes = ["forest", "cupcake", "bumblebee", "emerald", "corporate", "synthwave", "retro", "cyberpunk", "valentine", "halloween", "garden", "aqua", "lofi", "pastel", "fantasy", "wireframe", "black", "luxury", "dracula", "cmyk", "autumn", "business", "acid", "lemonade", "night", "coffee", "winter", "light", "dark"];
+  const monthsMap = ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'];
+  const weekdayMap = ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"];
 
   const [loading, setLoading] = useState(true);
-  const [ravesData, setRavesData] = useState<Rave[]>(raves);
+  const [ravesData, setRavesData] = useState<RaveProps[]>(raves);
 
   const capitalizeFirstLetter = (string: String) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
@@ -28,21 +42,28 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
   };
 
   const handleSearchRave = (e: BaseSyntheticEvent) => {
-    setRavesData(searchRaveByFilter(e.target.value));
+    setRavesData(searchRaveByKeywork(e.target.value));
   };
 
-  const searchRaveByFilter = (filter: string) => {
-    filter = filter.toLowerCase();
+  const searchRaveByKeywork = (keywork: string) => {
+    keywork = keywork.toLowerCase();
 
-    if (filter.length === 0) {
+    if (keywork.length === 0) {
       return raves;
     }
 
+    let filterMonth = monthsMap.filter(month => month.toLowerCase().includes(keywork));
+    let monthFiltered = filterMonth.length > 0 ? monthsMap.indexOf(filterMonth[0]) + 1 : 0;
+
     return raves.filter(rave => {
-      //alert(rave.date + ' - ' + new Date(rave.date));
-      return rave.name.toLowerCase().includes(filter)
-        || rave.city.toLowerCase().includes(filter)
-        || rave.state.toLowerCase().includes(filter)
+      return rave.name.toLowerCase().includes(keywork)
+        || rave.city.toLowerCase().includes(keywork)
+        || rave.state.toLowerCase().includes(keywork)
+        || rave.place.toLowerCase().includes(keywork)
+        || moment.utc(rave.date).format('M') == monthFiltered.toString()
+        || moment.utc(rave.date).format('YYYY') == keywork
+        || moment.utc(rave.date).format('ddd').includes(keywork)
+        || moment.utc(rave.date).format('DD/MM/YYYY').includes(keywork)
     });
   };
 
@@ -61,12 +82,8 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
         <div className="flex flex-row items-end">
           <button className="btn mr-5" onClick={() => { setLoading(true); router.push('/signin') }}>Entrar</button>
           <div>
-            <label htmlFor="selectTema" className="text-sm font-medium leading-none">
-              Selecione um tema
-            </label>
-            <br />
             <select id="selectTema" className="select select-bordered" data-choose-theme onChange={handleChangeTheme} value={theme}>
-              <option value="system">Padrão</option>
+              <option value="system">Tema</option>
               {
                 themes.map((theme, index) => {
                   return <option key={index} value={theme}>{capitalizeFirstLetter(theme)}</option>;
@@ -80,7 +97,7 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
       <div className="overflow-x-auto w-full p-5 pt-0">
         <div className="navbar">
           <div className="flex w-full">
-            <div className="form-control w-1/2">
+            <div className="form-control w-full lg:w-1/2">
               <input type="text" placeholder="Buscar rave" onChange={handleSearchRave} className="input input-bordered mb-5" />
             </div>
           </div>
@@ -88,15 +105,16 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
 
         <div className="artboard grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 bg-primary p-5 rounded-xl">
           {
-            ravesData.map((rave: Rave) => {
+            ravesData.map((rave: RaveProps) => {
               return (
-                <div className="card bg-base-100 shadow-xl flex flex-row" key={rave.id}>
-                  <figure><Image src="/flor_da_vida.jpg" alt="Banner - Flor da Vida" layout="fixed" width={110} height={150} /></figure>
+                <div className="card bg-base-100 shadow-xl flex flex-row" key={rave.id.toString()}>
+                  <figure><Image src="/flor_da_vida.jpg" alt={'Banner - ' + rave.name} layout="fixed" width={110} height={150} /></figure>
                   <div className="card-body p-5">
                     <h2 className="card-title">{rave.name}</h2>
                     <div className="card-actions">
-                      <div className="badge badge-outline">{rave.date}</div>
-                      <div className="badge badge-outline">Fazenda Meia Lua</div>
+                      <div className="badge badge-outline">{weekdayMap[new Date(moment(rave.date).toDate().getTime()).getDay() + 1]}</div>
+                      <div className="badge badge-outline">{moment.utc(rave.date).format('DD/MM/YYYY')}</div>
+                      <div className="badge badge-outline">{rave.place}</div>
                       <div className="badge badge-outline">{rave.city}</div>
                       <div className="badge badge-outline">{rave.state}</div>
                     </div>
@@ -108,7 +126,7 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
               )
             })
           }
-          <h1 style={{ display: ravesData.length === 0 ? 'block' : 'none' }}>Ops, não encontrei nenhum role com esse filtro!</h1>
+          <h1 style={{ display: ravesData.length === 0 ? 'block' : 'none' }}>Ops, não encontrei nenhum role!</h1>
         </div>
       </div>
       <Loader showLoader={loading} />
@@ -119,13 +137,16 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
 export default Home
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const raves: Rave[] = await prisma.rave.findMany();
+  const raves: RaveProps[] = await prisma.rave.findMany();
 
   const data = raves.map(rave => {
     return {
       id: rave.id,
       name: rave.name,
-      date: rave.date.toLocaleDateString(),
+      date: new Date(rave.date.getTime()).toISOString(),
+      place: rave.place,
+      url: rave.url,
+      image: rave.image,
       city: rave.city,
       state: rave.state,
     }

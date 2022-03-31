@@ -1,10 +1,10 @@
-import type { GetServerSideProps, NextPage } from 'next'
-import { getSession, signIn } from 'next-auth/react'
-import Image from 'next/image'
-import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
-import Loader from '../components/Loader'
-import '../styles/Signin.module.css'
+import type { GetServerSideProps, NextPage } from 'next';
+import { getSession, signIn } from 'next-auth/react';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import Loader from '../components/Loader';
+import '../styles/Signin.module.css';
 
 const SignIn: NextPage = () => {
     const router = useRouter();
