@@ -1,4 +1,5 @@
 import { signOut } from 'next-auth/react';
+import Head from 'next/head';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import Loader from "../../components/Loader";
@@ -18,6 +19,10 @@ export default function App() {
 
     return (
         <>
+            <Head>
+                <title>Painel - Raves List</title>
+            </Head>
+
             <div className="flex flex-row justify-between p-5">
                 <div className="flex flex-row items-center">
                     <span className="logo"></span>

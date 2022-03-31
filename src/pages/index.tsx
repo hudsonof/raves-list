@@ -2,6 +2,7 @@ import moment from 'moment';
 import 'moment/locale/pt-br';
 import type { GetServerSideProps, NextPage } from 'next';
 import { useTheme } from 'next-themes';
+import Head from 'next/head';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { BaseSyntheticEvent, useEffect, useState } from 'react';
@@ -74,6 +75,9 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
 
   return (
     <>
+      <Head>
+        <title>Raves List</title>
+      </Head>
       <div className="flex flex-row justify-between p-5">
         <div className="flex flex-row items-center">
           <span className="logo"></span>
