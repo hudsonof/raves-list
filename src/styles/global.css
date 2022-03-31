@@ -20,6 +20,11 @@ html, body {
     height: 50px;
 }
 
+.error-logo-size {
+    width: 150px;
+    height: 150px;
+}
+
 [data-theme="forest"] .logo,
 [data-theme="dark"] .logo,
 [data-theme="synthwave"] .logo,

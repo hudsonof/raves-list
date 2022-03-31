@@ -81,7 +81,7 @@ const Home: NextPage<RavesProps> = ({ raves }) => {
       <div className="flex flex-row justify-between p-5">
         <div className="flex flex-row items-center">
           <span className="logo"></span>
-          <h1 className='pl-5'>Raves List</h1>
+          <h1 className="pl-5">Raves List</h1>
         </div>
         <div className="flex flex-row items-end">
           <button className="btn mr-5" onClick={() => { setLoading(true); router.push('/signin') }}>Entrar</button>
