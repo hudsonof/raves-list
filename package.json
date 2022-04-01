@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@prisma/client": "^3.11.1",
+    "axios": "^0.26.1",
     "dotenv": "^16.0.0",
     "moment": "^2.29.1",
     "next": "12.1.0",
